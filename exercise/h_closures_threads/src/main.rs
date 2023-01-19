@@ -58,16 +58,15 @@ fn main() {
     // flow of execution works.  Once you understand it, alter the values passed to the `pause_ms()`
     // calls so that both the "Thread B" outputs occur before the "Thread A" outputs.
 
-    /*
     let (tx, rx) = channel::unbounded();
     // Cloning a channel makes another variable connected to that end of the channel so that you can
     // send it to another thread.
     let tx2 = tx.clone();
 
     let handle_a = thread::spawn(move || {
-        pause_ms(0);
+        pause_ms(150);
         tx2.send("Thread A: 1").unwrap();
-        pause_ms(200);
+        pause_ms(150);
         tx2.send("Thread A: 2").unwrap();
     });
 
@@ -76,7 +75,7 @@ fn main() {
     let handle_b = thread::spawn(move || {
         pause_ms(0);
         tx.send("Thread B: 1").unwrap();
-        pause_ms(200);
+        pause_ms(0);
         tx.send("Thread B: 2").unwrap();
     });
 
@@ -91,12 +90,14 @@ fn main() {
     // Join the child threads for good hygiene.
     handle_a.join().unwrap();
     handle_b.join().unwrap();
-    */
+    
 
     // Challenge: Make two child threads and give them each a receiving end to a channel.  From the
     // main thread loop through several values and print each out and then send it to the channel.
     // On the child threads print out the values you receive. Close the sending side in the main
     // thread by calling `drop(tx)` (assuming you named your sender channel variable `tx`).  Join
     // the child threads.
+
+    
     println!("Main thread: Exiting.")
 }
