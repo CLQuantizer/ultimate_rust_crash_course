@@ -32,21 +32,23 @@ fn main() {
     // join handle in a variable called `handle`. Once you've done this you should be able to run
     // the code and see the Child thread output in the middle of the main thread's letters
     //
-    //let handle = ...
-
+    let handler = thread::spawn(|| {
+        expensive_sum(my_vector)
+    });
+    
     // While the child thread is running, the main thread will also do some work
     for letter in vec!["a", "b", "c", "d", "e", "f"] {
         println!("Main thread: Letter {}", letter);
         pause_ms(200);
     }
-
+    
     // 3. Let's retrieve the value returned by the child thread once it has exited.  Using the
     // `handle` variable you stored the join handle in earlier, call .join() to wait for the thread
     // to exit with a `Result<i32, Err>`.  Get the i32 out of the result and store it in a `sum`
     // variable.  Uncomment the println.  If you did 1a and 1b correctly, the sum should be 20.
     //
-    //let sum =
-    //println!("The child thread's expensive sum is {}", sum);
+    let sum = handler.join().unwrap();
+    println!("The child thread's expensive sum is {}", sum);
 
     // Time for some fun with threads and channels!  Though there is a primitive type of channel
     // in the std::sync::mpsc module, I recommend always using channels from the crossbeam crate,
