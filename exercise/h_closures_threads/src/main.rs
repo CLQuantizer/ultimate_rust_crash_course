@@ -32,7 +32,7 @@ fn main() {
     // join handle in a variable called `handle`. Once you've done this you should be able to run
     // the code and see the Child thread output in the middle of the main thread's letters
     //
-    let handler = thread::spawn(|| {
+    let handler = thread::spawn(move|| {
         expensive_sum(my_vector)
     });
     
@@ -97,7 +97,28 @@ fn main() {
     // On the child threads print out the values you receive. Close the sending side in the main
     // thread by calling `drop(tx)` (assuming you named your sender channel variable `tx`).  Join
     // the child threads.
+    let (t, r1) = channel::unbounded();
+    let r2 = r1.clone();
 
-    
-    println!("Main thread: Exiting.")
+    let child1 = thread::spawn(move|| {
+        for msg in r1.iter(){
+            println!("Child 1 received: {}", msg);
+        }
+    });
+
+    let child2 = thread::spawn(move|| {
+        for msg in r2.iter(){
+            println!("Child 2 received: {}", msg);
+        }
+    });
+
+    for i in 1..=100 {
+        println!("Sending {} to channel", i);
+        t.send(i.to_string()).unwrap();
+    }
+
+    drop(t);
+
+    child1.join().unwrap();
+    // child2.join().unwrap();
 }
